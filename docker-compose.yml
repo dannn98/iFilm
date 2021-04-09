@@ -13,7 +13,6 @@ services:
             - php
         depends_on:
             - db
-
     php:
         build:
             context: .
@@ -22,13 +21,12 @@ services:
             - .:/app/
 
     db:
-        build:
-            context: .
-            dockerfile: docker/postgre/Dockerfile
-        ports:
-            - "6432:5432"
-        restart: always
+        image: postgres:13
         environment:
-            POSTGRES_USER: user
-            POSTGRES_PASSWORD: silnehaslo
-            POSTGRES_DB: ifilmdb
+          POSTGRES_USER: postgres
+          POSTGRES_PASSWORD: postgres
+          POSTGRES_DB: ifilm
+        ports:
+          - "7432:5432"
+        volumes:
+          - ./_data/postgres:/var/lib/postgres
