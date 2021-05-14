@@ -26,7 +26,7 @@ class Comment
      * @ORM\ManyToOne(targetEntity=User::class)
      * @ORM\JoinColumn(nullable=false)
      */
-    private $id_user;
+    private ?User $user;
 
     /**
      * @ORM\Column(type="text")
@@ -50,14 +50,14 @@ class Comment
         return $this;
     }
 
-    public function getIdUser(): ?User
+    public function getUser(): ?User
     {
-        return $this->id_user;
+        return $this->user;
     }
 
-    public function setIdUser(?User $id_user): self
+    public function setUser(?User $user): self
     {
-        $this->id_user = $id_user;
+        $this->user = $user;
 
         return $this;
     }

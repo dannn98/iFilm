@@ -26,7 +26,7 @@ class WatchList
      * @ORM\ManyToOne(targetEntity=User::class)
      * @ORM\JoinColumn(nullable=false)
      */
-    private $id_user;
+    private ?User $user;
 
     /**
      * @ORM\Column(type="string", length=255)
@@ -50,14 +50,14 @@ class WatchList
         return $this;
     }
 
-    public function getIdUser(): ?User
+    public function getUser(): ?User
     {
-        return $this->id_user;
+        return $this->user;
     }
 
-    public function setIdUser(?User $id_user): self
+    public function setIdUser(?User $user): self
     {
-        $this->id_user = $id_user;
+        $this->user = $user;
 
         return $this;
     }
