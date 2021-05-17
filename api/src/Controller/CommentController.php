@@ -50,7 +50,7 @@ class CommentController extends AbstractController
     }
 
     /**
-     * @Route("/api/comments/{id_movie}", name="comment.delComment", methods="GET")
+     * @Route("/api/comment/{id_movie}", name="comment.getComment", methods="GET")
      * @return Response
      */
     public function getComments(int $id_movie): Response
