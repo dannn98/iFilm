@@ -2,8 +2,12 @@
 
 namespace App\Repository;
 
+use App\Entity\User;
 use App\Entity\WatchList;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
+use Doctrine\ORM\OptimisticLockException;
+use Doctrine\ORM\ORMException;
+use Doctrine\ORM\Query\Expr\Join;
 use Doctrine\Persistence\ManagerRegistry;
 
 /**
@@ -19,32 +23,52 @@ class WatchListRepository extends ServiceEntityRepository
         parent::__construct($registry, WatchList::class);
     }
 
-    // /**
-    //  * @return WatchList[] Returns an array of WatchList objects
-    //  */
-    /*
-    public function findByExampleField($value)
+    public function save(WatchList $watchListEntity)
     {
-        return $this->createQueryBuilder('w')
-            ->andWhere('w.exampleField = :val')
-            ->setParameter('val', $value)
-            ->orderBy('w.id', 'ASC')
-            ->setMaxResults(10)
-            ->getQuery()
-            ->getResult()
-        ;
+        try {
+            $this->getEntityManager()->persist($watchListEntity);
+            $this->getEntityManager()->flush();
+        } catch (ORMException|OptimisticLockException $e) {
+            return null;
+        }
+        return $watchListEntity;
     }
-    */
 
-    /*
-    public function findOneBySomeField($value): ?WatchList
+    public function update(WatchList $watchListEntity)
     {
-        return $this->createQueryBuilder('w')
-            ->andWhere('w.exampleField = :val')
-            ->setParameter('val', $value)
-            ->getQuery()
-            ->getOneOrNullResult()
-        ;
+        try {
+            $this->getEntityManager()->persist($watchListEntity);
+            $this->getEntityManager()->flush();
+        } catch (ORMException|OptimisticLockException $e) {
+            return null;
+        }
+        return $watchListEntity;
     }
-    */
+
+    public function remove(WatchList $watchListEntity): bool
+    {
+        try {
+            $this->getEntityManager()->remove($watchListEntity);
+            $this->getEntityManager()->flush();
+        } catch (ORMException|OptimisticLockException $e) {
+            return false;
+        }
+        return true;
+    }
+
+    public function getWatchlist(int $user_id): ?array
+    {
+        $qb = $this->getEntityManager()->createQueryBuilder();
+
+        $qb
+            ->select('w.id', 'u.email', 'w.id_movie', 'w.watched')
+            ->from('App\Entity\WatchList', 'w')
+            ->join('App\Entity\User', 'u', Join::WITH, 'w.user = u.id')
+            ->where('u.id = :user_id')
+            ->setParameter('user_id', $user_id);
+
+        $query = $qb->getQuery();
+
+        return $query->getResult();
+    }
 }
