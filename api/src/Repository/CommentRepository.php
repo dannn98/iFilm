@@ -3,10 +3,11 @@
 namespace App\Repository;
 
 use App\Entity\Comment;
+use App\Entity\User;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
-use Doctrine\DBAL\Driver\Exception;
 use Doctrine\ORM\OptimisticLockException;
 use Doctrine\ORM\ORMException;
+use Doctrine\ORM\Query\Expr\Join;
 use Doctrine\Persistence\ManagerRegistry;
 
 /**
@@ -44,22 +45,17 @@ class CommentRepository extends ServiceEntityRepository
 
     public function getCommentsByIdMovie(int $id_movie): ?array
     {
-        $conn = $this->getEntityManager()->getConnection();
+        $qb = $this->getEntityManager()->createQueryBuilder();
 
-        $sql = '
-            SELECT c.id as id, id_movie, u.email as email, c.comment
-            FROM comment c
-            JOIN public.user u ON c.user_id = u.id
-            WHERE id_movie = :id_movie
-        ';
+        $qb
+            ->select('c.id', 'u.email', 'c.id_movie', 'c.comment')
+            ->from(Comment::class, 'c')
+            ->join(User::class, 'u', Join::WITH, 'c.user = u.id')
+            ->where('c.id_movie = :id_movie')
+            ->setParameter('id_movie', $id_movie);
 
-        $stmt = $conn->prepare($sql);
-        $stmt->execute(['id_movie' => $id_movie]);
+        $query = $qb->getQuery();
 
-        try {
-            return $stmt->fetchAllAssociative();
-        } catch (Exception $e) {
-            return null;
-        }
+        return $query->getResult();
     }
 }
