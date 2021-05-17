@@ -14,6 +14,7 @@ security:
 
         register:
             pattern: ^/api/user
+            methods: [POST]
             stateless: true
             anonymous: true
 
@@ -29,6 +30,7 @@ security:
         api:
             pattern: ^/api
             stateless: true
+            provider: app_user_provider
             guard:
                 authenticators:
                     - lexik_jwt_authentication.jwt_token_authenticator
@@ -36,7 +38,7 @@ security:
     # Easy way to control access for large sections of your site
     # Note: Only the *first* access control that matches will be used
     access_control:
-        - { path: ^/api/user, roles: IS_AUTHENTICATED_ANONYMOUSLY }
+        - { path: ^/api/user, roles: IS_AUTHENTICATED_ANONYMOUSLY, methods: ["POST"] }
         - { path: ^/api/login, roles: IS_AUTHENTICATED_ANONYMOUSLY }
         - { path: ^/api,       roles: IS_AUTHENTICATED_FULLY }
 
