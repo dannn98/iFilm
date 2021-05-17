@@ -34,17 +34,6 @@ class WatchListRepository extends ServiceEntityRepository
         return $watchListEntity;
     }
 
-    public function update(WatchList $watchListEntity)
-    {
-        try {
-            $this->getEntityManager()->persist($watchListEntity);
-            $this->getEntityManager()->flush();
-        } catch (ORMException|OptimisticLockException $e) {
-            return null;
-        }
-        return $watchListEntity;
-    }
-
     public function remove(WatchList $watchListEntity): bool
     {
         try {
@@ -62,8 +51,8 @@ class WatchListRepository extends ServiceEntityRepository
 
         $qb
             ->select('w.id', 'u.email', 'w.id_movie', 'w.watched')
-            ->from('App\Entity\WatchList', 'w')
-            ->join('App\Entity\User', 'u', Join::WITH, 'w.user = u.id')
+            ->from(WatchList::class, 'w')
+            ->join(User::class, 'u', Join::WITH, 'w.user = u.id')
             ->where('u.id = :user_id')
             ->setParameter('user_id', $user_id);
 

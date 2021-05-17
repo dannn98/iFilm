@@ -27,12 +27,12 @@ class WatchListService implements WatchListServiceInterface
         $watchlist->setIdUser($user)->setIdMovie($arr["id_movie"])->setWatched($arr["watched"]);
 
         $row = $this->repo->findOneBy(["id_movie" => $watchlist->getIdMovie(), "user" => $user->getId()]);
-        if($row !== null)
+        if($row)
         {
-            if($row->getWatched() === $watchlist->getWatched())
-                return true;
+            if($row->getWatched() === $watchlist->getWatched()) return true;
+
             $row->setWatched($watchlist->getWatched());
-            return $this->repo->update($row) !== null;
+            return $this->repo->save($row) !== null;
         }
 
         return $this->repo->save($watchlist) !== null;
