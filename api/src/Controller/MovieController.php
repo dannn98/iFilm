@@ -2,44 +2,49 @@
 
 namespace App\Controller;
 
-use Swagger\Annotations as SWG;
+use App\Service\MovieService\MovieService;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
-use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 
 class MovieController extends AbstractController
 {
-    /**
-     * @Route("/api/movies", name="movies.index", methods="GET")
-     */
-    public function index(): Response
+    private MovieService $movieService;
+
+    public function __construct(
+        MovieService $movieService
+    )
     {
-        return $this->json([
-            'message' => 'Trailery!',
-            'path' => 'src/Controller/MovieController.php',
-        ]);
+        $this->movieService = $movieService;
     }
 
     /**
-     * @Route("/api/movies/trailers", name="movie.trailers.indexTrailers", methods="GET")
+     * @Route("/api/movie/{id_movie}", name="movie.getMovie", methods="GET")
+     * @param int $id_movie
+     * @return Response
      */
-    public function indexTrailers(): Response
+    public function getMovie(int $id_movie): Response
     {
-        return $this->json([
-            'message' => 'Trailery!',
-            'path' => 'src/Controller/MovieController.php',
-        ]);
+        $array = $this->movieService->getMovieDetails($id_movie);
+
+        if(!$array) return new Response("Could not found movie with id: $id_movie", Response::HTTP_NOT_FOUND);
+
+        return $this->json($array);
     }
 
     /**
-     * @Route("/api/movies/{id}", name="movie.show", requirements={"id"="\d+"}, methods="GET")
+     * @Route("/api/movie/page/{page}", name="movie.getMovies", methods="GET")
+     * @param int $page
+     * @return Response
      */
-    public function show(int $id): Response
+    public function getMovies(int $page): Response
     {
-        return $this->json([
-            'message' => 'Trailery!',
-            'path' => 'src/Controller/MovieController.php',
-        ]);
+        $array = $this->movieService->getMovieList($page);
+
+        if(!$array) return new Response("Something went wrong", Response::HTTP_BAD_REQUEST);
+
+        return $this->json(["numberOfElements" => count($array["results"]),"data" => $array]);
     }
+
+
 }
