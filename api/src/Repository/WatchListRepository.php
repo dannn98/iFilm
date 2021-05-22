@@ -23,7 +23,7 @@ class WatchListRepository extends ServiceEntityRepository
         parent::__construct($registry, WatchList::class);
     }
 
-    public function save(WatchList $watchListEntity)
+    public function save(WatchList $watchListEntity): ?WatchList
     {
         try {
             $this->getEntityManager()->persist($watchListEntity);

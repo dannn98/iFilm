@@ -13,7 +13,7 @@ class CommentService implements CommentServiceInterface
     private CommentRepository $repo;
 
     public function __construct(
-        CommentRepository $repo,
+        CommentRepository $repo
     )
     {
         $this->repo = $repo;
