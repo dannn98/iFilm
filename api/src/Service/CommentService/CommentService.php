@@ -5,35 +5,32 @@ namespace App\Service\CommentService;
 
 
 use App\Entity\Comment;
+use App\Entity\User;
 use App\Repository\CommentRepository;
-use App\Repository\UserRepository;
 
 class CommentService implements CommentServiceInterface
 {
     private CommentRepository $repo;
-    private UserRepository $userRepo;
 
     public function __construct(
         CommentRepository $repo,
-        UserRepository $userRepo
     )
     {
         $this->repo = $repo;
-        $this->userRepo = $userRepo;
     }
 
-    public function addComment(array $arr): bool {
+    public function addComment(User $user, array $arr): bool {
         $comment = new Comment();
 
         if(!$arr) return false;
 
-        $comment->setIdMovie($arr["id_movie"])->setUser($this->userRepo->find($arr["id_user"]))->setComment($arr["comment"]);
+        $comment->setIdMovie($arr["id_movie"])->setUser($user)->setComment($arr["comment"]);
 
         return $this->repo->save($comment) !== null;
     }
 
-    public function delComment(array $arr): bool {
-        $comment = $this->repo->find($arr["id"]);
+    public function delComment(User $user, array $arr): bool {
+        $comment = $this->repo->findOneBy(["id" => $arr["id"], "user" => $user]);
 
         if(!$comment) return false;
 

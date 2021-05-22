@@ -26,9 +26,10 @@ class CommentController extends AbstractController
      */
     public function addComment(Request $request): Response
     {
+        $user = $this->getUser();
         $data = json_decode($request->getContent(), true);
 
-        if($this->commentService->addComment($data)){
+        if($this->commentService->addComment($user, $data)){
             return new Response("Comment added",Response::HTTP_CREATED);
         }
         return new Response("Something went wrong", Response::HTTP_BAD_REQUEST);
@@ -41,9 +42,10 @@ class CommentController extends AbstractController
      */
     public function delComment(Request $request): Response
     {
+        $user = $this->getUser();
         $data = json_decode($request->getContent(), true);
 
-        if($this->commentService->delComment($data)) {
+        if($this->commentService->delComment($user, $data)) {
             return new Response("Comment deleted",Response::HTTP_OK);
         }
         return new Response("Something went wrong", Response::HTTP_BAD_REQUEST);
