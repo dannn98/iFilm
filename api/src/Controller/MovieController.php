@@ -2,7 +2,9 @@
 
 namespace App\Controller;
 
+use App\Service\CommentService\CommentService;
 use App\Service\MovieService\MovieService;
+use App\Service\ScoreService\ScoreService;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
@@ -10,12 +12,18 @@ use Symfony\Component\Routing\Annotation\Route;
 class MovieController extends AbstractController
 {
     private MovieService $movieService;
+    private ScoreService $scoreService;
+    private CommentService $commentService;
 
     public function __construct(
-        MovieService $movieService
+        MovieService $movieService,
+        ScoreService $scoreService,
+        CommentService $commentService
     )
     {
         $this->movieService = $movieService;
+        $this->scoreService = $scoreService;
+        $this->commentService = $commentService;
     }
 
     /**
@@ -29,7 +37,10 @@ class MovieController extends AbstractController
 
         if(!$array) return new Response("Could not found movie with id: $id_movie", Response::HTTP_NOT_FOUND);
 
-        return $this->json($array);
+        $score = $this->scoreService->getScore($id_movie);
+        $comments = $this->commentService->getComments($id_movie);
+
+        return $this->json(["movie" => $array, "score" => $score["sum"], "comments" => $comments]);
     }
 
     /**
@@ -43,7 +54,7 @@ class MovieController extends AbstractController
 
         if(!$array) return new Response("Something went wrong", Response::HTTP_BAD_REQUEST);
 
-        return $this->json(["numberOfElements" => count($array["results"]),"data" => $array]);
+        return $this->json($array);
     }
 
 
