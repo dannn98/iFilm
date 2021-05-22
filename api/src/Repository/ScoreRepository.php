@@ -44,6 +44,6 @@ class ScoreRepository extends ServiceEntityRepository
 
         $query = $qb->getQuery();
 
-        return $query->getResult();
+        return $query->getResult()[0];
     }
 }

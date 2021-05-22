@@ -42,9 +42,9 @@ class ScoreController extends AbstractController
      */
     public function getScore(int $id_movie): Response
     {
-        $array = $this->scoreService->getScore($id_movie);
+        $score = $this->scoreService->getScore($id_movie);
 
-        return $this->json($array);
+        return $this->json($score);
     }
 
 
