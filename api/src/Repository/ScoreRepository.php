@@ -4,6 +4,8 @@ namespace App\Repository;
 
 use App\Entity\Score;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
+use Doctrine\ORM\OptimisticLockException;
+use Doctrine\ORM\ORMException;
 use Doctrine\Persistence\ManagerRegistry;
 
 /**
@@ -19,32 +21,29 @@ class ScoreRepository extends ServiceEntityRepository
         parent::__construct($registry, Score::class);
     }
 
-    // /**
-    //  * @return Score[] Returns an array of Score objects
-    //  */
-    /*
-    public function findByExampleField($value)
+    public function save(Score $scoreEntity)
     {
-        return $this->createQueryBuilder('s')
-            ->andWhere('s.exampleField = :val')
-            ->setParameter('val', $value)
-            ->orderBy('s.id', 'ASC')
-            ->setMaxResults(10)
-            ->getQuery()
-            ->getResult()
-        ;
+        try {
+            $this->getEntityManager()->persist($scoreEntity);
+            $this->getEntityManager()->flush();
+        } catch (ORMException|OptimisticLockException $e) {
+            return null;
+        }
+        return $scoreEntity;
     }
-    */
 
-    /*
-    public function findOneBySomeField($value): ?Score
+    public function getScoreByIdMovie(int $id_movie): ?array
     {
-        return $this->createQueryBuilder('s')
-            ->andWhere('s.exampleField = :val')
-            ->setParameter('val', $value)
-            ->getQuery()
-            ->getOneOrNullResult()
-        ;
+        $qb = $this->getEntityManager()->createQueryBuilder();
+
+        $qb
+            ->select('AVG(s.score) as sum')
+            ->from(Score::class, 's')
+            ->where('s.id_movie = :id_movie')
+            ->setParameter('id_movie', $id_movie);
+
+        $query = $qb->getQuery();
+
+        return $query->getResult();
     }
-    */
 }
