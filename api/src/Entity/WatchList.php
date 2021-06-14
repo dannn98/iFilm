@@ -33,6 +33,11 @@ class WatchList
      */
     private $watched;
 
+    /**
+     * @ORM\OneToOne(targetEntity=WatchListDetails::class, mappedBy="watchlist", cascade={"persist", "remove"})
+     */
+    private $watchListDetails;
+
     public function getId(): ?int
     {
         return $this->id;
@@ -70,6 +75,20 @@ class WatchList
     public function setWatched(string $watched): self
     {
         $this->watched = $watched;
+
+        return $this;
+    }
+
+    public function getWatchListDetails(): ?WatchListDetails
+    {
+        return $this->watchListDetails;
+    }
+
+    public function setWatchListDetails(WatchListDetails $watchListDetails): self
+    {
+        $watchListDetails->setWatchlist($this);
+
+        $this->watchListDetails = $watchListDetails;
 
         return $this;
     }

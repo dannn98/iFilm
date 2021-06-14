@@ -5,6 +5,7 @@ namespace App\Service\WatchList;
 
 use App\Entity\User;
 use App\Entity\WatchList;
+use App\Entity\WatchListDetails;
 use App\Repository\WatchListRepository;
 
 class WatchListService implements WatchListServiceInterface
@@ -25,6 +26,9 @@ class WatchListService implements WatchListServiceInterface
         if(!$arr) return false;
 
         $watchlist->setIdUser($user)->setIdMovie($arr["id_movie"])->setWatched($arr["watched"]);
+        $watchlist->setWatchListDetails(new WatchListDetails());
+
+        $watchlist->getWatchListDetails()->setTitle($arr["title"]);
 
         $row = $this->repo->findOneBy(["id_movie" => $watchlist->getIdMovie(), "user" => $user->getId()]);
         if($row)

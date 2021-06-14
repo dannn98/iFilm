@@ -4,6 +4,7 @@ namespace App\Repository;
 
 use App\Entity\User;
 use App\Entity\WatchList;
+use App\Entity\WatchListDetails;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\ORM\OptimisticLockException;
 use Doctrine\ORM\ORMException;
@@ -50,9 +51,10 @@ class WatchListRepository extends ServiceEntityRepository
         $qb = $this->getEntityManager()->createQueryBuilder();
 
         $qb
-            ->select('w.id', 'u.email', 'w.id_movie', 'w.watched')
+            ->select('w.id', 'd.title', 'w.id_movie', 'w.watched')
             ->from(WatchList::class, 'w')
             ->join(User::class, 'u', Join::WITH, 'w.user = u.id')
+            ->join(WatchListDetails::class, 'd', Join::WITH, 'w.id = d.watchlist')
             ->where('u.id = :user_id')
             ->setParameter('user_id', $user_id);
 
