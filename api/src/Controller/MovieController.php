@@ -6,6 +6,7 @@ use App\Service\CommentService\CommentService;
 use App\Service\MovieService\MovieService;
 use App\Service\ScoreService\ScoreService;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 
@@ -41,6 +42,22 @@ class MovieController extends AbstractController
         $comments = $this->commentService->getComments($id_movie);
 
         return $this->json(["movie" => $array, "score" => $score["sum"], "comments" => $comments]);
+    }
+
+    /**
+     * @Route("/api/search/movie", name="movie.searchMovie", methods="POST")
+     * @return Response
+     */
+    public function searchMovie(Request $request): Response
+    {
+        $data = json_decode($request->getContent(), true);
+        $key = $data["key"];
+
+        $array = $this->movieService->searchMovie($key);
+
+        if(!$array) return new Response("Could not found movie $key", Response::HTTP_NOT_FOUND);
+
+        return $this->json($array);
     }
 
     /**
