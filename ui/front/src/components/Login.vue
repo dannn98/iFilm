@@ -1,4 +1,5 @@
 <template>
+    <LoadingSpinner v-if="loading"></LoadingSpinner>
     <form @submit.prevent="handleLogin">
         <input v-model="user.email" type="text" placeholder="email@email.com">
         <input v-model="user.password" type="password" placeholder="password">
@@ -11,17 +12,21 @@
 <script>
 import User from '@/models/user';
 import axios from 'axios';
+import LoadingSpinner from '@/components/LoadingSpinner';
 
 export default {
     name: 'Login',
-    components: {},
+    components: {LoadingSpinner},
     data() {
         return {
-            user: new User('', '')
+            user: new User('', ''),
+            loading: false
         }
     },
     methods: {
         handleLogin() {
+            this.loading = true;
+
             const data = {
                 username: this.user.email,
                 password: this.user.password
@@ -33,9 +38,11 @@ export default {
                 console.debug(response);
 
                 localStorage.setItem('token', response.data.token);
+                this.loading = false;
                 this.$router.push('/home');
             })
-            .catch(function(error){
+            .catch(function(error) {
+                this.loading = false;
                 console.log("Error: " + error);
             })
         }

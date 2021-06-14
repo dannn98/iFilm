@@ -97,5 +97,8 @@ export default {
         position: fixed;
         top: calc(50vh - 40px);
         left: calc(50vw - 40px);
+
+        border-radius: 5px;
+        background-color: rgba(39, 39, 39, 0.8);
     }
 </style>
