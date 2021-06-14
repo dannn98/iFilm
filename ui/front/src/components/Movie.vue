@@ -85,6 +85,7 @@ export default {
         toWatch() {
             const data = {
                 id_movie: this.movie.id,
+                title: this.movie.title,
                 watched: "false"
             }
 
@@ -104,6 +105,7 @@ export default {
         watched() {
             const data = {
                 id_movie: this.movie.id,
+                title: this.movie.title,
                 watched: "true"
             }
 
