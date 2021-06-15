@@ -1,4 +1,5 @@
 <template>
+    <LoadingSpinner v-if="loading"></LoadingSpinner>
     <form @submit.prevent="handleRegister">
         <p class="message">{{ message }}</p>
         <input v-model="user.email" type="text" placeholder="email@email.com">
@@ -6,45 +7,47 @@
         <input v-model="password" name="password" type="password" placeholder="re-entry password">
         <button type="submit">Sign in</button>
         <p>Already have an account? <router-link to="/login">Login here</router-link></p>
-        <p>To Continue browsing movies, <router-link to="/home">click here</router-link></p>
     </form>
 </template>
 
 <script>
 import User from '@/models/user';
+import LoadingSpinner from '@/components/LoadingSpinner';
 import axios from 'axios';
 
 export default {
     name: 'Register',
-    components: {},
+    components: {LoadingSpinner},
     data() {
         return {
             user: new User('', ''),
             password: "",
-            message: ""
+            message: "",
+            loading: false
         }
     },
     methods: {
         handleRegister() {
+            this.loading = true;
+
             const data = {
                 email: this.user.email,
                 password: this.user.password
             };
 
             if(this.user.password !== this.password) {
-                console.log("Passwords are not the same!");
                 this.message = "Passwords are not the same!";
             }
             else {
-                console.log(data);
                 axios.post('http://localhost:8081/api/user', data)
-                .then(response => {
-                    console.debug(response);
+                .then(() => {
                     this.$router.push('/login');
+                    this.loading = false
                 })
                 .catch(function(error){
                     console.log("Error: " + error);
                     this.message = error
+                    this.loading = false
                 })
             }
         }

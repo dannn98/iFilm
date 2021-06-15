@@ -5,7 +5,6 @@
         <input v-model="user.password" type="password" placeholder="password">
         <button>Sign in</button>
         <p>Don't have an account? <router-link to="/register">Create account here</router-link></p>
-        <p>To Continue browsing movies, <router-link to="/home">click here</router-link></p>
     </form>
 </template>
 
@@ -35,8 +34,6 @@ export default {
             console.log(data);
             axios.post('http://localhost:8081/api/login_check', data)
             .then(response => {
-                console.debug(response);
-
                 localStorage.setItem('token', response.data.token);
                 this.loading = false;
                 this.$router.push('/home');

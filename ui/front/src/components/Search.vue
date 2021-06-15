@@ -45,7 +45,6 @@ export default {
                 }
             })
             .then(response => {
-                console.debug(response);
                 this.movies = response.data.results;
                 this.loading = false;
             })

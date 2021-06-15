@@ -68,7 +68,6 @@ export default {
             }
         })
         .then(response => {
-            console.debug(response);
             this.movie = response.data.movie;
             this.comments = response.data.comments;
 
@@ -94,8 +93,7 @@ export default {
                     Authorization: 'Bearer ' + localStorage.getItem('token')
                 }
             })
-            .then(response => {
-                console.debug(response);
+            .then(() => {
                 this.message = "Movie added to watch";
             })
             .catch(function(error){
@@ -114,8 +112,7 @@ export default {
                     Authorization: 'Bearer ' + localStorage.getItem('token')
                 }
             })
-            .then(response => {
-                console.debug(response);
+            .then(() => {
                 this.message = "Movie watched";
             })
             .catch(function(error){

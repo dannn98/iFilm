@@ -41,8 +41,7 @@ export default {
                     Authorization: 'Bearer ' + localStorage.getItem('token')
                 }
             })
-            .then(response => {
-                console.debug(response);
+            .then(() => {
                 window.location.reload();
             })
             .catch(function(error){

@@ -41,10 +41,8 @@ export default {
             }
         })
         .then(response => {
-            console.debug(response);
             this.movies = response.data.results;
             this.loading = false;
-            console.debug(this.movies);
         })
         .catch(function(error) {
             console.log("Error: " + error);

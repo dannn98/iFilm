@@ -37,14 +37,13 @@ export default {
                 }
             })
             .then(response => {
-                console.debug(response);
                 for(var i = 0, j = 0; i < response.data.watchlist.length; i++) {
                     if(response.data.watchlist[i].watched === "true"){
                         this.movies[j] = response.data.watchlist[i];
                         j++;
                     }
                 }
-                console.debug(this.movies);
+
                 this.loading = false;
             })
             .catch(function(error) {
